@@ -1,25 +1,32 @@
-import "./db";
 import express from "express";
 import morgan from "morgan";
-import globalRouter from "./routers/globerRouter";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
+import { localsMiddleware } from "./middlewares";
 
-const PORT = 4000;
 
 const app = express();
 const logger = morgan("dev");
-app.use(logger);
+
 
 app.set("view engine","pug");
 app.set("views", process.cwd()+"/src/views");
-app.use("/", globalRouter);
+app.use(logger);
 app.use(express.urlencoded({extendted : true}));
+app.use(session({
+    secret: process.env.COOKIE_SECRET,
+    resave:false,
+    saveUninitialized: false,
+    store: MongoStore.create({mongoUrl: process.env.DB_URL}),
+}));
+
+app.use(localsMiddleware);
+app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
 
-const handleListening = () => 
-console.log(`Server listening on port http:localhost:${PORT}`);
-
-app.listen(PORT, handleListening);
+export default app;
