@@ -148,6 +148,8 @@ export const postEdit = async(req, res) =>{
     body:{name,email,username,location},
     file,
   }=req;
+
+  console.log(file);
   
   if(originemail!==email)
   {
