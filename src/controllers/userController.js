@@ -148,6 +148,7 @@ export const postEdit = async(req, res) =>{
     body:{name,email,username,location},
     file,
   }=req;
+  
   if(originemail!==email)
   {
     const kak=await User.exists({email})
@@ -170,7 +171,7 @@ export const postEdit = async(req, res) =>{
     return res.status(400).render("edit-profile",{pageTitle: "fail edit" ,errorMessage:"Social login can't change data",})
   }
   const updatedUser=await User.findByIdAndUpdate(_id,{
-    avatarUrl : file ? file.path : avatarUrl,
+    avatarUrl : file ? file.location : avatarUrl,
     name,
     email,
     username,
@@ -220,6 +221,7 @@ export const see = async(req, res)=> {
       model: "User",
     },
   });
+  console.log(user)
   if(!user){
     return res.status(400).render("404",{pageTitle:"User not found"});
   }
