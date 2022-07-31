@@ -7,10 +7,6 @@ header
                 a(href="/search")
                     i.fas.fa-search
             if loggedIn
-                if loggedInUser.socialOnly
-                    img(src=loggedInUser.avatarUrl).avatar
-                else
-                    img(src="/" + loggedInUser.avatarUrl).avatar
                 li
                     a(href="/videos/upload") Upload Video
                 li
