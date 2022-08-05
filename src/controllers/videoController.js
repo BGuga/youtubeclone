@@ -46,8 +46,7 @@ export const postEdit = async(req, res) => {
   if(String(video.owner)!==String(_id))
   {
     req.flash("error", "You are not the the owner of the video.");
-    return res.status(403).redirect("/");    req.flash("error", "You are not the the owner of the video.");
-
+    return res.status(403).redirect("/");    
   }
   await Video.findByIdAndUpdate(id, {
     title,
@@ -72,7 +71,7 @@ export const postUpload = async (req, res) => {
       title,
       description,
       fileUrl: isHeroku ? video[0].location : video[0].path,
-      thumbUrl: isHeroku ? thumb[0].location.replace(/[\\]/g, "/") : video[0].path.replace(/[\\]/g, "/"),
+      thumbUrl: isHeroku ? thumb[0].location.replace(/[\\]/g, "/") : thumb[0].path.replace(/[\\]/g, "/"),
       owner:_id,
       hashtags: Video.formatHashtags(hashtags),
     });
@@ -153,4 +152,24 @@ export const createComment = async (req, res) => {
 export const textfunc=(req,res)=>{
   console.log("it work");
   res.end();
+}
+
+export const commentdelete=async(req,res)=>{
+  const {id} = req.params;
+  const targetcomment = await Comment.findById(id).populate("video");
+  if(!targetcomment){
+    res.sendStatus(404);
+  }
+  const commentvideo = await Video.findById(targetcomment.video._id);
+  if(!commentvideo){
+    res.sendStatus(404);
+  }
+  const filterArr = commentvideo.comments.filter(function(data) {
+    return String(data)!==String(targetcomment._id);
+  });
+  await Video.findByIdAndUpdate(targetcomment.video._id,{
+    comments:filterArr,
+  });
+  await Comment.findByIdAndDelete(id);
+  res.sendStatus(201);
 }
