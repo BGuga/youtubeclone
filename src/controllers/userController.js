@@ -237,7 +237,7 @@ export const kakaoStart =(req, res)=>{
   const baseURL = "https://kauth.kakao.com/oauth/authorize"
   const config ={
       client_id:process.env.Kakao_id,
-      redirect_uri:"http://localhost:4000/users/kakao/finish",
+      redirect_uri:"https://gugaswetube.herokuapp.com/users/kakao/finish",
       response_type:"code",
   }
   const params = new URLSearchParams(config).toString();
@@ -251,7 +251,7 @@ export const kakaofinish = async(req,res)=>{
   const config ={
       grant_type:"authorization_code",
       client_id:process.env.Kakao_id,
-      redirect_uri:"http://localhost:4000/users/kakao/finish",
+      redirect_uri:"https://gugaswetube.herokuapp.com/users/kakao/finish",
       code,
       client_secret:process.env.Kakao_secret,
   }
