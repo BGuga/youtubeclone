@@ -7,7 +7,9 @@ import {
     startGithubLogin, 
     finishGithubLogin,
     getChangePassword,
-    postChangePassword
+    postChangePassword,
+    kakaoStart,
+    kakaofinish,
 
 } from "../controllers/userController"
 import { protectorMiddleware, publicOnlyMiddleware, avatarUpload } from "../middlewares";
@@ -19,6 +21,8 @@ userRouter.route("/edit").all(protectorMiddleware).get(getEdit).post(avatarUploa
 userRouter.route("/change-password").all(protectorMiddleware).get(getChangePassword).post(postChangePassword);
 userRouter.get("/github/start", publicOnlyMiddleware,startGithubLogin);
 userRouter.get("/github/finish", publicOnlyMiddleware,finishGithubLogin);
+userRouter.get("/kakao/start",publicOnlyMiddleware,kakaoStart);
+userRouter.get("/kakao/finish",publicOnlyMiddleware,kakaofinish);
 userRouter.get("/:id",see);
 
 

@@ -233,3 +233,59 @@ export const see = async(req, res)=> {
   })
 }
 
+export const kakaoStart =(req, res)=>{
+  const baseURL = "https://kauth.kakao.com/oauth/authorize"
+  const config ={
+      client_id:process.env.Kakao_id,
+      redirect_uri:"http://localhost:4000/users/kakao/finish",
+      response_type:"code",
+  }
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseURL}?${params}`;
+  return res.redirect(finalUrl);
+}
+
+export const kakaofinish = async(req,res)=>{
+  const baseURL = "https://kauth.kakao.com/oauth/token"
+  const {code} = req.query;
+  const config ={
+      grant_type:"authorization_code",
+      client_id:process.env.Kakao_id,
+      redirect_uri:"http://localhost:4000/users/kakao/finish",
+      code,
+      client_secret:process.env.Kakao_secret,
+  }
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseURL}?${params}`
+  const response =await(await fetch(finalUrl, {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'}
+  })).json();
+  if ("access_token" in response) {
+      const { access_token } = response;
+      const userRequest = await (
+        await fetch("https://kapi.kakao.com/v2/user/me", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            "Content-type": "application/json",
+          },
+        })
+      ).json();
+      let user = await User.findOne({ email:userRequest.kakao_account.email})
+      if(!user){
+          user = await User.create({
+              avatarUrl: userRequest.properties.profile_image,
+              name: userRequest.properties.nickname,
+              username:userRequest.properties.nickname,
+              email: userRequest.kakao_account.email,
+              password: "",
+              socialOnly: true,
+              location: "",
+          })}
+          req.session.loggedIn = true;
+          req.session.user=user;
+          return res.redirect("/");
+    } else {
+      return res.redirect("/login");
+    } 
+}
