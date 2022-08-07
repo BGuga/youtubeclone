@@ -19,9 +19,9 @@ header
                             span 😀
                         else 
                             if loggedInUser.socialOnly.toString().includes("github")
-                                img.header__avatar(src=loggedInUser.avatarUrl crossorigin="anonymous")
+                                img.header__avatar(src=loggedInUser.avatarUrl,crossorigin)
                             else
-                                img.header__avatar(src=loggedInUser.avatarUrl crossorigin="anonymous")
+                                img.header__avatar(src=loggedInUser.avatarUrl,crossorigin)
             else
                 li
                     a(href="/login")  Login                        
