@@ -58,6 +58,7 @@ if (form) {
   form.addEventListener("submit", handleSubmit);
 }
 if(deletebtns){
+  console.log(deletebtns);
   deletebtns.forEach((deletebtn)=>{
     deletebtn.addEventListener("click", deletecomment)
   });
