@@ -8,6 +8,7 @@ const handleMouseEnter = (event) => {
   const thumbvideo = document.createElement("video");
   thumbvideo.src = videofile;
   thumbvideo.autoplay = true;
+  thumbvideo.crossOrigin = true;
   thumbvideo.classList.add("thumbvideo");
   target.appendChild(thumbvideo);
 };
