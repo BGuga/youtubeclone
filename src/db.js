@@ -5,7 +5,7 @@ mongoose.connect(process.env.DB_URL, {
 });
 
 const db = mongoose.connection;
-
+console.log("I'm in heroku");
 const handleOpen = () => console.log("✅ Connected to DB");
 const handleError = (error) => console.log("❌ DB Error", error);
 
