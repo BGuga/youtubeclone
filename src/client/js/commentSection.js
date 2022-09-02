@@ -20,7 +20,7 @@ const addComment = (text, id) => {
   videoComments.prepend(newComment);
 };
 
-const handleSubmit = async(event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
   const textarea = form.querySelector("textarea");
   const text = textarea.value;
@@ -28,14 +28,14 @@ const handleSubmit = async(event) => {
   if (text === "") {
     return;
   }
-  const response= await fetch(`/api/videos/${videoId}/comment`, {
+  const response = await fetch(`/api/videos/${videoId}/comment`, {
     method: "POST",
     headers: {
-        "Content-Type": "application/json",
-      },
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ text }),
   });
-  textarea.value="";
+  textarea.value = "";
   if (response.status === 201) {
     textarea.value = "";
     const { newCommentId } = await response.json();
@@ -43,23 +43,22 @@ const handleSubmit = async(event) => {
   }
 };
 
-const deletecomment = async(event)=>{
-  const li= event.target.parentElement.parentElement;
-  const commentId= li.dataset.id;
-  const response = await fetch(`/api/comments/${commentId}/delete`,{
-    method:"DELETE",
+const deletecomment = async (event) => {
+  const li = event.target.parentElement.parentElement;
+  const commentId = li.dataset.id;
+  const response = await fetch(`/api/comments/${commentId}/delete`, {
+    method: "DELETE",
   });
-  if(response.status===201){
+  if (response.status === 201) {
     li.remove();
   }
-}
+};
 
 if (form) {
   form.addEventListener("submit", handleSubmit);
 }
-if(deletebtns){
-  console.log(deletebtns);
-  deletebtns.forEach((deletebtn)=>{
-    deletebtn.addEventListener("click", deletecomment)
+if (deletebtns) {
+  deletebtns.forEach((deletebtn) => {
+    deletebtn.addEventListener("click", deletecomment);
   });
 }

@@ -3,8 +3,9 @@
   .video-mixin__thumb {
     height: 140px;
     border-radius: 7px;
-    width: 100%;
+    width: 280px;
     background-color: ivory;
+    overflow: hidden;
   }
   .video-mixin__data {
     padding: 0px 15px;
@@ -19,10 +20,16 @@
     }
   }
 }
-
-#thumbPic{
+.thumbvideo {
   position: relative;
-  width:100%;
+  border-radius: 7px;
+  width: 100%;
+  max-width: 100%;
+}
+.thumbPic {
+  position: relative;
+  border-radius: 7px;
+  width: 100%;
   max-width: 100%;
   height: inherit;
 }

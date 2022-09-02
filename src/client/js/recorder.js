@@ -21,13 +21,16 @@ const downloadFile = (fileUrl, fileName) => {
   a.click();
 };
 
-const handleDownload = async() => {
+const handleDownload = async () => {
   actionBtn.removeEventListener("click", handleDownload);
 
   actionBtn.innerText = "Transcoding...";
 
   actionBtn.disabled = true;
-  const ffmpeg = createFFmpeg({corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js', log: true });
+  const ffmpeg = createFFmpeg({
+    corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
+    log: true,
+  });
   await ffmpeg.load();
   ffmpeg.FS("writeFile", files.input, await fetchFile(videoFile));
 
@@ -42,11 +45,11 @@ const handleDownload = async() => {
     "1",
     files.thumb
   );
-  
+
   const mp4File = ffmpeg.FS("readFile", files.output);
-  
+
   const thumbFile = ffmpeg.FS("readFile", files.thumb);
-  
+
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
 
   const thumbBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
@@ -54,11 +57,11 @@ const handleDownload = async() => {
   const mp4Url = URL.createObjectURL(mp4Blob);
 
   const thumbUrl = URL.createObjectURL(thumbBlob);
-  
+
   downloadFile(mp4Url, "MyRecording.mp4");
-  
+
   downloadFile(thumbUrl, "MyThumbnail.jpg");
-  
+
   ffmpeg.FS("unlink", files.input);
   ffmpeg.FS("unlink", files.output);
   ffmpeg.FS("unlink", files.thumb);
@@ -73,38 +76,37 @@ const handleDownload = async() => {
 };
 
 const handleStart = () => {
-    actionBtn.innerText = "Recording";
-    actionBtn.disabled = true;
-    actionBtn.removeEventListener("click", handleStart);
-    recorder = new MediaRecorder(stream);
-    recorder.ondataavailable = (event) => {
-      videoFile = URL.createObjectURL(event.data);
-      video.srcObject = null;
-      video.src = videoFile;
-      video.loop = true;
-      video.play();
-      actionBtn.innerText = "Download";
-      actionBtn.disabled = false;
-      actionBtn.addEventListener("click", handleDownload);
-    };
-    recorder.start();
-    setTimeout(() => {
-      recorder.stop();
-    }, 5000);
-  };
-
-const init  = async () => {
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        width: 1024,
-        height: 576,
-      },
-    });
-    video.srcObject = stream;
+  actionBtn.innerText = "Recording";
+  actionBtn.disabled = true;
+  actionBtn.removeEventListener("click", handleStart);
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (event) => {
+    videoFile = URL.createObjectURL(event.data);
+    video.srcObject = null;
+    video.src = videoFile;
+    video.loop = true;
     video.play();
-    
+    actionBtn.innerText = "Download";
+    actionBtn.disabled = false;
+    actionBtn.addEventListener("click", handleDownload);
   };
+  recorder.start();
+  setTimeout(() => {
+    recorder.stop();
+  }, 5000);
+};
+
+const init = async () => {
+  stream = await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      width: 1024,
+      height: 512,
+    },
+  });
+  video.srcObject = stream;
+  video.play();
+};
 
 init();
 
